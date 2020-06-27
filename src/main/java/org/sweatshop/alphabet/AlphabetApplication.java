@@ -1,13 +1,16 @@
 package org.sweatshop.alphabet;
 
+import org.sweatshop.alphabet.health.AlphabetHealthCheck;
+import org.sweatshop.alphabet.resources.AlphabetResources;
+
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
-public class alphabetApplication extends Application<alphabetConfiguration> {
+public class AlphabetApplication extends Application<AlphabetConfiguration> {
 
     public static void main(final String[] args) throws Exception {
-        new alphabetApplication().run(args);
+        new AlphabetApplication().run(args);
     }
 
     @Override
@@ -16,14 +19,21 @@ public class alphabetApplication extends Application<alphabetConfiguration> {
     }
 
     @Override
-    public void initialize(final Bootstrap<alphabetConfiguration> bootstrap) {
+    public void initialize(final Bootstrap<AlphabetConfiguration> bootstrap) {
         // TODO: application initialization
     }
 
     @Override
-    public void run(final alphabetConfiguration configuration,
-                    final Environment environment) {
-        // TODO: implement application
+    public void run(AlphabetConfiguration configuration,
+                    Environment environment) {
+        final AlphabetResources resource = new AlphabetResources(
+            configuration.getTemplate(),
+            configuration.getDefaultName()
+        );
+        final AlphabetHealthCheck healthCheck =
+            new AlphabetHealthCheck(configuration.getTemplate());
+        environment.healthChecks().register("template", healthCheck);
+        environment.jersey().register(resource);
     }
 
 }
