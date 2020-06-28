@@ -6,6 +6,7 @@ import org.sweatshop.alphabet.resources.AlphabetResources;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.vavr.jackson.datatype.VavrModule;
 
 public class AlphabetApplication extends Application<AlphabetConfiguration> {
 
@@ -20,8 +21,8 @@ public class AlphabetApplication extends Application<AlphabetConfiguration> {
 
     @Override
     public void initialize(final Bootstrap<AlphabetConfiguration> bootstrap) {
-        // TODO: application initialization
-    }
+        bootstrap.getObjectMapper().registerModule(new VavrModule());
+        }
 
     @Override
     public void run(AlphabetConfiguration configuration,

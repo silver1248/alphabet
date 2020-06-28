@@ -5,14 +5,14 @@ import com.codahale.metrics.annotation.Timed;
 import io.vavr.collection.List;
 import lombok.Value;
 
+import java.util.Optional;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.sweatshop.alphabet.api.AlphabetSaying;
-
-import java.util.Optional;
 
 @javax.ws.rs.Path("/")
 @Produces(MediaType.APPLICATION_JSON)
@@ -39,4 +39,5 @@ public class AlphabetResources {
             return alphabet;
         }
     }
+
 }
