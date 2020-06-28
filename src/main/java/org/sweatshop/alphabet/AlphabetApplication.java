@@ -22,7 +22,7 @@ public class AlphabetApplication extends Application<AlphabetConfiguration> {
     @Override
     public void initialize(final Bootstrap<AlphabetConfiguration> bootstrap) {
         bootstrap.getObjectMapper().registerModule(new VavrModule());
-        }
+    }
 
     @Override
     public void run(AlphabetConfiguration configuration,
