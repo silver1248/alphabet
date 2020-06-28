@@ -4,3 +4,4 @@ dependency-reduced-pom.xml
 /.project
 /.settings/
 /local/
+/test-output/
