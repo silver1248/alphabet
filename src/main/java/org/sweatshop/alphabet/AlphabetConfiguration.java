@@ -1,33 +1,24 @@
 package org.sweatshop.alphabet;
 
 import io.dropwizard.Configuration;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.validation.constraints.NotEmpty;
 
+@Value
+@EqualsAndHashCode(callSuper=false)
 public class AlphabetConfiguration extends Configuration {
-    @NotEmpty
-    private String template;
+    @NotEmpty String template;
+    @NotEmpty String defaultName;
 
-    @NotEmpty
-    private String defaultName = "Stranger";
-
-    @JsonProperty
-    public String getTemplate() {
-        return template;
-    }
-
-    @JsonProperty
-    public void setTemplate(String template) {
+    @JsonCreator
+    public AlphabetConfiguration(
+            @JsonProperty("template") String template, @JsonProperty("defaultName") String defaultName)
+    {
         this.template = template;
-    }
-
-    @JsonProperty
-    public String getDefaultName() {
-        return defaultName;
-    }
-
-    @JsonProperty
-    public void setDefaultName(String name) {
-        this.defaultName = name;
+        this.defaultName = defaultName;
     }
 }

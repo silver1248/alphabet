@@ -35,5 +35,4 @@ public class AlphabetApplication extends Application<AlphabetConfiguration> {
         environment.healthChecks().register("template", healthCheck);
         environment.jersey().register(resource);
     }
-
 }
