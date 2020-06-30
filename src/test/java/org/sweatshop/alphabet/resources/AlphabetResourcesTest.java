@@ -2,6 +2,8 @@ package org.sweatshop.alphabet.resources;
 
 import static org.testng.Assert.assertEquals;
 
+import java.util.Optional;
+
 import org.sweatshop.alphabet.resources.AlphabetResources;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -34,6 +36,26 @@ public class AlphabetResourcesTest {
 
             {"Alfa", List.of("Alfa")},
             {"Zulu", fullAlphabet},
+        };
+    }
+
+    @Test(dataProvider="changingPhoneticTestDP")
+    public void changingPhoneticTest(Optional<Character> in, List<String> expected) {
+        AlphabetResources fsr = new AlphabetResources("Hello, %s!", "Stranger");
+        assertEquals(fsr.changingPhonetic(in), expected);
+    }
+    
+    @DataProvider
+    Object[][] changingPhoneticTestDP() {
+        return new Object[][] {
+            {Optional.empty(), fullAlphabet},
+
+            {Optional.of('d'), List.of("Delta")},
+
+            {Optional.of('f'), List.of("Delta")},
+            {Optional.of('F'), List.of("Delta")},
+
+            {Optional.of('d'), List.of("Delta")},
         };
     }
 }

@@ -7,9 +7,10 @@ import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.vavr.jackson.datatype.VavrModule;
+import lombok.Generated;
 
 public class AlphabetApplication extends Application<AlphabetConfiguration> {
-
+    @Generated
     public static void main(final String[] args) throws Exception {
         new AlphabetApplication().run(args);
     }

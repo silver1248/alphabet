@@ -5,7 +5,10 @@ import com.codahale.metrics.annotation.Timed;
 import io.vavr.collection.List;
 import lombok.Value;
 
+import java.util.Optional;
+
 import javax.ws.rs.GET;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -24,6 +27,7 @@ public class AlphabetResources {
     @GET
     @Timed
     public List<String> phonetic(@QueryParam("word") String word) {
+
         if (word != null && !word.equals("")) {
             int whereIsWord = alphabet.indexOf(word.substring(0, 1).toUpperCase() + word.substring(1));
             if (whereIsWord == -1) {
@@ -34,5 +38,22 @@ public class AlphabetResources {
         } else {
             return alphabet;
         }
+    }
+
+    @javax.ws.rs.Path("alphabet/{letter}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    @Timed
+    public String changingPhonetic(@PathParam("letter") Optional<Character> in) {
+        int charVal = in.get() - 'a';
+        return alphabet.get(charVal);
+    }
+
+    @javax.ws.rs.Path("/alphabet/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    @Timed
+    public List<String> staticPhonetic() {
+        return alphabet;
     }
 }
