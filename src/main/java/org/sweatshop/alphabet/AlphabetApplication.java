@@ -6,7 +6,6 @@ import org.sweatshop.alphabet.resources.AlphabetResources;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import io.vavr.collection.List;
 import io.vavr.jackson.datatype.VavrModule;
 import lombok.Generated;
 

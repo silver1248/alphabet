@@ -65,22 +65,22 @@ public class AlphabetResources {
     @Produces(MediaType.APPLICATION_JSON)
     @PUT
     @Timed
-    public List<String> changeLetter(@PathParam("letter") Character in, @QueryParam ("word") String word) {
+    public String changeLetter(@PathParam("letter") Character in, @QueryParam ("word") String word) {
         int charVal = Character.toUpperCase(in) - 'A';
         if (Character.toUpperCase(word.charAt(0)) - 'A' == charVal) {
             alphabetToChange = alphabetToChange.subSequence(0, charVal).append(word).appendAll(alphabetToChange.takeRight(26 - (charVal + 1)));
         }
-        return alphabetToChange;
+        return alphabetToChange.get(charVal);
     }
 
     @javax.ws.rs.Path("alphabet/{letter}")
     @Produces(MediaType.APPLICATION_JSON)
     @DELETE
     @Timed
-    public List<String> resetLetter(@PathParam("letter") Optional<Character> in) {
+    public String resetLetter(@PathParam("letter") Optional<Character> in) {
         int charVal = Character.toUpperCase(in.get()) - 'A';
         alphabetToChange = alphabetToChange.take(charVal).append(alphabet.get(charVal)).appendAll(alphabetToChange.takeRight(26 - (charVal + 1)));
-        return alphabetToChange;
+        return alphabetToChange.get(charVal);
     }
 
     @javax.ws.rs.Path("/alphabet/")
