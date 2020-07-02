@@ -1,6 +1,7 @@
 package org.sweatshop.alphabet.resources;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 
 import java.util.Optional;
 
@@ -9,7 +10,9 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import io.vavr.collection.List;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class AlphabetResourcesTest {
 
     List<String> fullAlphabet = List.of("Alfa", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet", "Kilo", "Lima",
@@ -17,7 +20,7 @@ public class AlphabetResourcesTest {
 
     @Test(dataProvider="phoneticTestDP")
     public void phoneticTest(String word, List<String> expected) {
-        AlphabetResources fsr = new AlphabetResources("Hello, %s!", "Stranger");
+        AlphabetResources fsr = new AlphabetResources();
         assertEquals(fsr.phonetic(word), expected);
     }
 
@@ -39,23 +42,34 @@ public class AlphabetResourcesTest {
         };
     }
 
-    @Test(dataProvider="changingPhoneticTestDP")
-    public void changingPhoneticTest(Optional<Character> in, List<String> expected) {
-        AlphabetResources fsr = new AlphabetResources("Hello, %s!", "Stranger");
-        assertEquals(fsr.changingPhonetic(in), expected);
+    @Test(dataProvider = "getLetterDP")
+    public void getLetterTest(Optional<Character> in, String expected, Exception expectedE) {
+        AlphabetResources ar = new AlphabetResources();
+        try {
+            assertEquals(ar.getLetter(in), expected);
+            assertNull(expectedE);
+            return;
+        } catch (Exception e) {
+            log.error("problem ", e);
+            assertEquals(e.getClass(), expectedE.getClass());
+            assertEquals(e.getMessage(), expectedE.getMessage());
+        }
     }
-    
+
     @DataProvider
-    Object[][] changingPhoneticTestDP() {
+    Object[][] getLetterDP() {
         return new Object[][] {
-            {Optional.empty(), fullAlphabet},
 
-            {Optional.of('d'), List.of("Delta")},
+            {Optional.of('G'), "Golf", null},
+            {Optional.of('g'), "Golf", null},
 
-            {Optional.of('f'), List.of("Delta")},
-            {Optional.of('F'), List.of("Delta")},
-
-            {Optional.of('d'), List.of("Delta")},
+            {Optional.of('n'), "November", null},
         };
+    }
+
+    @Test
+    public void staticPhoneticTest() {
+        AlphabetResources fsr = new AlphabetResources();
+        assertEquals(fsr.getAlphabet(), fullAlphabet);
     }
 }

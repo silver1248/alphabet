@@ -6,10 +6,12 @@ import org.sweatshop.alphabet.resources.AlphabetResources;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.vavr.collection.List;
 import io.vavr.jackson.datatype.VavrModule;
 import lombok.Generated;
 
 public class AlphabetApplication extends Application<AlphabetConfiguration> {
+
     @Generated
     public static void main(final String[] args) throws Exception {
         new AlphabetApplication().run(args);
@@ -27,13 +29,10 @@ public class AlphabetApplication extends Application<AlphabetConfiguration> {
 
     @Override
     public void run(AlphabetConfiguration configuration,
-                    Environment environment) {
-        final AlphabetResources resource = new AlphabetResources(
-            configuration.getTemplate(),
-            configuration.getDefaultName()
-        );
+            Environment environment) {
+        final AlphabetResources resource = new AlphabetResources();
         final AlphabetHealthCheck healthCheck =
-            new AlphabetHealthCheck(configuration.getTemplate());
+                new AlphabetHealthCheck(configuration.getTemplate());
         environment.healthChecks().register("template", healthCheck);
         environment.jersey().register(resource);
     }
