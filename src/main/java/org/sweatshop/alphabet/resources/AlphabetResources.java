@@ -66,6 +66,7 @@ public class AlphabetResources {
     @PUT
     @Timed
     public String changeLetter(@PathParam("letter") Character in, @QueryParam ("word") String word) {
+        word = normalizeCases(word);
         int charVal = Character.toUpperCase(in) - 'A';
         if (Character.toUpperCase(word.charAt(0)) - 'A' == charVal) {
             alphabetToChange = alphabetToChange.subSequence(0, charVal).append(word).appendAll(alphabetToChange.takeRight(26 - (charVal + 1)));
@@ -90,5 +91,9 @@ public class AlphabetResources {
     public List<String> resetAlphabet() {
         alphabetToChange = alphabet;
         return alphabetToChange;
+    }
+
+    public static String normalizeCases(String word) {
+        return word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
     }
 }
