@@ -15,22 +15,27 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AlphabetResourcesTest {
 
-    List<String> fullAlphabet = List.of("Alfa", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet", "Kilo", "Lima",
-            "Mike", "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "X-ray", "Yankee", "Zulu");
+    final List<String> alphabet = List.of("Alfa", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet", "Kilo", "Lima", "Mike",
+            "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "X-ray", "Yankee", "Zulu");
+
+    public AlphabetResources getAr() {
+        AlphabetResources ar = new AlphabetResources();
+        ar.resetAlphabet();
+        return ar;
+    }
 
     @Test(dataProvider="phoneticTestDP")
     public void phoneticTest(String word, List<String> expected) {
-        AlphabetResources fsr = new AlphabetResources();
-        assertEquals(fsr.phonetic(word), expected);
+        assertEquals(getAr().phonetic(word), expected);
     }
 
     @DataProvider
     Object[][] phoneticTestDP() {
         return new Object[][] {
-            {null, fullAlphabet},
-            {"", fullAlphabet},
+            {null, alphabet},
+            {"", alphabet},
 
-            {"hello", fullAlphabet},
+            {"hello", alphabet},
 
             {"oscar", List.of("Alfa", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet", "Kilo", "Lima",
                     "Mike", "November", "Oscar")},
@@ -38,13 +43,14 @@ public class AlphabetResourcesTest {
                     "Mike", "November", "Oscar")},
 
             {"Alfa", List.of("Alfa")},
-            {"Zulu", fullAlphabet},
+            {"Zulu", alphabet},
         };
     }
 
+
     @Test(dataProvider = "getLetterDP")
     public void getLetterTest(Optional<Character> in, String expected, Exception expectedE) {
-        AlphabetResources ar = new AlphabetResources();
+        AlphabetResources ar = getAr();
         try {
             assertEquals(ar.getLetter(in), expected);
             assertNull(expectedE);
@@ -68,8 +74,56 @@ public class AlphabetResourcesTest {
     }
 
     @Test
-    public void staticPhoneticTest() {
-        AlphabetResources fsr = new AlphabetResources();
-        assertEquals(fsr.getAlphabet(), fullAlphabet);
+    public void getAlphabetTest() {
+        AlphabetResources ar = getAr();
+        assertEquals(ar.getAlphabet(), alphabet);
+    }
+
+    @Test(dataProvider="changeLetterTestDP")
+    public void changeLetterTest(Character letter, String word, String expected) {
+        AlphabetResources ar = getAr();
+        assertEquals(ar.changeLetter(letter, word), expected);
+    }
+
+    @DataProvider
+    Object[][] changeLetterTestDP() {
+        return new Object[][] {
+
+            {'H', "HeLlO", "Hello"},
+            {'l', "letter", "Letter"},
+            {'h', "help", "Help"},
+            {'z', "zebra", "Zebra"},
+            {'s', "slide", "Slide"},
+            {'d', "Door", "Door"},
+            {'j', "JAR", "Jar"},
+            {'f', "FoOD", "Food"},
+
+            {'x', "food", "X-ray"},
+        };
+    }
+
+    @Test(dataProvider="resetLetterTestDP")
+    public void resetLetterTest(Optional<Character> letter, String expected) {
+        int charVal = Character.toUpperCase(letter.get()) - 'A';
+        AlphabetResources ar = getAr();
+        assertEquals(ar.resetLetter(letter), alphabet.get(charVal));
+    }
+
+    @DataProvider
+    Object[][] resetLetterTestDP() {
+        return new Object[][] {
+
+            {Optional.of('H'), "Hotel"},
+            {Optional.of('l'), "Lima"},
+            {Optional.of('h'), "Hotel"},
+            {Optional.of('z'), "Zulu"},
+            {Optional.of('s'), "Sierra"},
+        };
+    }
+
+    @Test
+    public void resestAlphabetTest() {
+        AlphabetResources ar = getAr();
+        assertEquals(ar.resetAlphabet(), alphabet);
     }
 }
