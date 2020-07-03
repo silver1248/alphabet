@@ -2,11 +2,12 @@ package org.sweatshop.alphabet.resources;
 
 import com.codahale.metrics.annotation.Timed;
 
+import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
+import io.vavr.collection.Map;
+import io.vavr.collection.Seq;
 import lombok.Value;
 import lombok.experimental.NonFinal;
-
-import java.util.Optional;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -23,8 +24,18 @@ public class AlphabetResources {
 
     static List<String> alphabet = List.of("Alfa", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet", "Kilo", "Lima",
             "Mike", "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "X-ray", "Yankee", "Zulu");
-    @NonFinal static List<String> alphabetToChange = List.of("Alfa", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet", "Kilo", "Lima",
-            "Mike", "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "X-ray", "Yankee", "Zulu");
+//    @NonFinal static List<String> alphabetToChange = List.of("Alfa", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet", "Kilo", "Lima",
+//            "Mike", "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "X-ray", "Yankee", "Zulu");
+
+    @NonFinal static Map<Character, String> current = createCurrent();
+
+    private static Map<Character, String> createCurrent() {
+        Map<Character, String> map = HashMap.empty();
+        for (String s : alphabet) {
+            map = map.put(s.charAt(0), s);
+        }
+        return map;
+    }
 
     @javax.ws.rs.Path("phonetic")
     @Produces(MediaType.APPLICATION_JSON)
@@ -48,17 +59,16 @@ public class AlphabetResources {
     @Produces(MediaType.APPLICATION_JSON)
     @GET
     @Timed
-    public String getLetter(@PathParam("letter") Optional<Character> in) {
-        int charVal = Character.toUpperCase(in.get()) - 'A';
-        return alphabetToChange.get(charVal);
+    public String getLetter(@PathParam("letter") Character in) {
+        return current.get(Character.toUpperCase(in)).get();
     }
 
     @javax.ws.rs.Path("/alphabet/")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
     @Timed
-    public List<String> getAlphabet() {
-        return alphabetToChange;
+    public Seq<String> getAlphabet() {
+        return current.values();
     }
 
     @javax.ws.rs.Path("/alphabet/{letter}")
@@ -67,30 +77,31 @@ public class AlphabetResources {
     @Timed
     public String changeLetter(@PathParam("letter") Character in, @QueryParam ("word") String word) {
         word = normalizeCases(word);
-        int charVal = Character.toUpperCase(in) - 'A';
-        if (Character.toUpperCase(word.charAt(0)) - 'A' == charVal) {
-            alphabetToChange = alphabetToChange.subSequence(0, charVal).append(word).appendAll(alphabetToChange.takeRight(26 - (charVal + 1)));
+        in = Character.toUpperCase(in);
+        if (in.equals(word.charAt(0))) {
+            current = current.put(in, word);
         }
-        return alphabetToChange.get(charVal);
+        return current.get(in).get();
     }
 
     @javax.ws.rs.Path("alphabet/{letter}")
     @Produces(MediaType.APPLICATION_JSON)
     @DELETE
     @Timed
-    public String resetLetter(@PathParam("letter") Optional<Character> in) {
-        int charVal = Character.toUpperCase(in.get()) - 'A';
-        alphabetToChange = alphabetToChange.take(charVal).append(alphabet.get(charVal)).appendAll(alphabetToChange.takeRight(26 - (charVal + 1)));
-        return alphabetToChange.get(charVal);
+    public String resetLetter(@PathParam("letter") Character in) {
+        int charVal = Character.toUpperCase(in) - 'A';
+        in = Character.toUpperCase(in);
+        current = current.put(in, alphabet.get(charVal));
+        return current.get(in).get();
     }
 
     @javax.ws.rs.Path("/alphabet/")
     @Produces(MediaType.APPLICATION_JSON)
     @DELETE
     @Timed
-    public List<String> resetAlphabet() {
-        alphabetToChange = alphabet;
-        return alphabetToChange;
+    public Seq<String> resetAlphabet() {
+        current = createCurrent();
+        return current.values();
     }
 
     public static String normalizeCases(String word) {

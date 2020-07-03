@@ -3,8 +3,6 @@ package org.sweatshop.alphabet.resources;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
-import java.util.Optional;
-
 import org.sweatshop.alphabet.resources.AlphabetResources;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -49,7 +47,7 @@ public class AlphabetResourcesTest {
 
 
     @Test(dataProvider = "getLetterDP")
-    public void getLetterTest(Optional<Character> in, String expected, Exception expectedE) {
+    public void getLetterTest(Character in, String expected, Exception expectedE) {
         AlphabetResources ar = getAr();
         try {
             assertEquals(ar.getLetter(in), expected);
@@ -66,10 +64,10 @@ public class AlphabetResourcesTest {
     Object[][] getLetterDP() {
         return new Object[][] {
 
-            {Optional.of('G'), "Golf", null},
-            {Optional.of('g'), "Golf", null},
+            {'G', "Golf", null},
+            {'g', "Golf", null},
 
-            {Optional.of('n'), "November", null},
+            {'n', "November", null},
         };
     }
 
@@ -103,8 +101,8 @@ public class AlphabetResourcesTest {
     }
 
     @Test(dataProvider="resetLetterTestDP")
-    public void resetLetterTest(Optional<Character> letter, String expected) {
-        int charVal = Character.toUpperCase(letter.get()) - 'A';
+    public void resetLetterTest(Character letter, String expected) {
+        int charVal = Character.toUpperCase(letter) - 'A';
         AlphabetResources ar = getAr();
         assertEquals(ar.resetLetter(letter), alphabet.get(charVal));
     }
@@ -113,11 +111,11 @@ public class AlphabetResourcesTest {
     Object[][] resetLetterTestDP() {
         return new Object[][] {
 
-            {Optional.of('H'), "Hotel"},
-            {Optional.of('l'), "Lima"},
-            {Optional.of('h'), "Hotel"},
-            {Optional.of('z'), "Zulu"},
-            {Optional.of('s'), "Sierra"},
+            {'H', "Hotel"},
+            {'l', "Lima"},
+            {'h', "Hotel"},
+            {'z', "Zulu"},
+            {'s', "Sierra"},
         };
     }
 
